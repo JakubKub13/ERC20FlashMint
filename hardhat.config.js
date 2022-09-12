@@ -23,7 +23,7 @@ module.exports = {
       {version: "0.6.0"},
     ],
   },
-  defaultNetwork: "hardhat",
+ 
   networks: {
     rinkeby: {
       url: RINKEBY_RPC_URL,
@@ -31,9 +31,10 @@ module.exports = {
       chainId: 4,
       blockConfirmations: 6,
     },
-    localhost: {
-      url: "http://127.0.0.1:8545/",
-      chainId: 31337,
+    hardhat: {
+      forking: {
+        url: "https://eth-mainnet.g.alchemy.com/v2/z59IS5DfOMU078HtV1-k9in97zIrepQW"
+      }
     }
   },   
   etherscan: {
