@@ -1,20 +1,25 @@
 const { assert, expect } = require("chai")
 const { network, getNamedAccounts, deployments, ethers } = require("hardhat")
 const { developmentChains, networkConfig } = require("../helper-hardhat-config.js")
+require("dotenv").config()
 
 !developmentChains.includes(network.name)
     ? describe.skip      
     : describe("WETH FlashMint", function () {
         let testWethFlashMint, weth
+        const MAINNET_FORK = process.env.MAINNET_RPC_URL
         const WETH_10 = "0xf4BB2e28688e89fCcE3c0580D37d36A7672E8A9F";
-        const WETH = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2";
-        const WETH_WHALE = "0xee2826453A4Fd5AfeB7ceffeEF3fFA2320081268";
+        const WETH10_ABI = [
+            "function flashLoan(IERC3156FlashBorrower receiver, address token, uint256 value, bytes calldata data) external override returns (bool)"
+        ]
+        const provider = new ethers.providers.JsonRpcProvider(MAINNET_FORK)
 
         beforeEach(async function () {
             deployer = (await getNamedAccounts()).deployer
             await deployments.fixture(["all"])
-            weth = await ethers.getContract(WETH_10)
+            weth = new ethers.Contract(WETH_10, WETH10_ABI, provider)
             testWethFlashMint = await ethers.getContract("TestWethFlashMint")
+
         })
 
         it("Flash", async () => {
@@ -23,8 +28,10 @@ const { developmentChains, networkConfig } = require("../helper-hardhat-config.j
             console.log(`sender: ${await testWethFlashMint.sender()}`)
             console.log(`token: ${await testWethFlashMint.token()}`)
 
-            for(const log of tx.logs) {
-                console.log(`${log.args.name} ${log.args.val}`)
-            }
+            console.log(tx)
+
+            //for(const log of tx.logs) {
+            //    console.log(`${log.args.name} ${log.args.val}`)
+            //}
         })
     })
