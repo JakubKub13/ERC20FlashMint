@@ -23,14 +23,15 @@ require("dotenv").config()
         })
 
         it("Flash", async () => {
-            const tx = await testWethFlashMint.flash()
+            const txResponse = await testWethFlashMint.flash()
+            const txReceipt = txResponse.wait(1)
             console.log(`contract: ${await testWethFlashMint.address}`)
             console.log(`sender: ${await testWethFlashMint.sender()}`)
             console.log(`token: ${await testWethFlashMint.token()}`)
 
-            console.log(tx)
+            console.log(await txReceipt)
 
-            //for(const log of tx.logs) {
+            //for(const log of txReceipt.logs) {
             //    console.log(`${log.args.name} ${log.args.val}`)
             //}
         })
